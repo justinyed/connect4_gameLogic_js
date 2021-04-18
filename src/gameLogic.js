@@ -70,7 +70,6 @@ class Game {
         x -= a;
         y -= b;
         while (this.getPiece(i, j, x, y) == this.getCurPlayer()) {
-            console.log(this.getPiece(i, j, x, y) + " @(" + x + ", " + y + ")");
             if (this.getPiece(i, j, x, y) == this.getCurPlayer()) { connected++; }
             x -= a;
             y -= b;
