@@ -54,15 +54,17 @@ class Game {
     isConnected(i, j) {
 
         console.log("Current Piece: " + this.getPiece(i, j, 0, 0));
-        if (this.isLineConnected(i, j, 1, 0, 1, 0) != 0) { return this.getCurPlayer(); }
-        if (this.isLineConnected(i, j, 0, 1, 0, 1) != 0) { return this.getCurPlayer(); }
-        if (this.isLineConnected(i, j, 1, 1, 1, 1) != 0) { return this.getCurPlayer(); }
-        if (this.isLineConnected(i, j, -1, 1, -1, 1) != 0) { return this.getCurPlayer(); }
+        if (this.isLineConnected(i, j, 1, 0) != 0) { return this.getCurPlayer(); }
+        if (this.isLineConnected(i, j, 0, 1) != 0) { return this.getCurPlayer(); }
+        if (this.isLineConnected(i, j, 1, 1) != 0) { return this.getCurPlayer(); }
+        if (this.isLineConnected(i, j, -1, 1) != 0) { return this.getCurPlayer(); }
         return NULL_CODE;
     }
 
-    isLineConnected(i, j, x, y, a, b) {
+    isLineConnected(i, j, x, y) {
         var connected = 0;
+        var a = x;
+        var b = y;
         do { /* Drilling */ x += a; y += b; }
         while (this.getPiece(i, j, x, y) == this.getCurPlayer());
         x -= a;
