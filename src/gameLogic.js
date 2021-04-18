@@ -54,36 +54,27 @@ class Game {
     isConnected(i, j) {
 
         console.log("Current Piece: " + this.getPiece(i, j, 0, 0));
+        if (this.isLineConnected(i, j, 1, 0, 1, 0) != 0) { return this.getCurPlayer(); }
+        if (this.isLineConnected(i, j, 0, 1, 0, 1) != 0) { return this.getCurPlayer(); }
+        if (this.isLineConnected(i, j, 1, 1, 1, 1) != 0) { return this.getCurPlayer(); }
+        if (this.isLineConnected(i, j, -1, 1, -1, 1) != 0) { return this.getCurPlayer(); }
+        return NULL_CODE;
+    }
+
+    isLineConnected(i, j, x, y, a, b) {
         var connected = 0;
-
-        var x = 0;
-        var y = 1;
-        var a = 0;
-        var b = 1;
-
-        do {
-            /* Drilling */
-            x += a;
-            y += b;
-        } while (this.getPiece(i, j, x, y) == this.getCurPlayer());
-
-        if (connected >= CONNECT_N) { return this.getCurPlayer(); } else { connected = 0; }
-
+        do { /* Drilling */ x += a; y += b; }
+        while (this.getPiece(i, j, x, y) == this.getCurPlayer());
         x -= a;
         y -= b;
-
         while (this.getPiece(i, j, x, y) == this.getCurPlayer()) {
             console.log(this.getPiece(i, j, x, y) + " @(" + x + ", " + y + ")");
             if (this.getPiece(i, j, x, y) == this.getCurPlayer()) { connected++; }
             x -= a;
             y -= b;
         }
-        if (connected >= CONNECT_N) { return this.getCurPlayer(); } else { connected = 0; }
-
-
-        return NULL_CODE;
+        if (connected >= CONNECT_N) { return this.getCurPlayer(); } else { return NULL_CODE; }
     }
-
 
 
     /**
@@ -225,42 +216,15 @@ let g1 = new Game();
 g1.debugFillWith(-1);
 var i = 3;
 var j = 3;
-g1.setPiece(i, j, 0, 3, 1);
-g1.setPiece(i, j, 0, 2, 1);
-g1.setPiece(i, j, 0, 1, 1);
+g1.setPiece(i, j, -3, 3, 1);
+g1.setPiece(i, j, -2, 2, 1);
+g1.setPiece(i, j, -1, 1, 1);
 g1.setPiece(i, j, 0, 0, 1);
-g1.setPiece(i, j, 0, -1, 1);
-g1.setPiece(i, j, 0, -2, 1);
+g1.setPiece(i, j, 1, -1, 1);
+g1.setPiece(i, j, 2, -2, 1);
 
 g1.turn++;
 
 
 g1.printBoard();
-g1.isConnected(3, 3);
-
-
-
-// do { /* Drilling */ } while (this.getPiece(i, j, ++xHat, --yHat) == this.getCurPlayer());
-        // while (this.getPiece(i, j, --xHat, ++yHat) == this.getCurPlayer()) {
-        //     console.log(this.getPiece(i, j, xHat, yHat) + " @(" + xHat + ", " + yHat + ")");
-        //     if (this.getPiece(i, j, xHat, yHat) == this.getCurPlayer()) { connected++; }
-        // }
-        // if (connected >= CONNECT_N) { return this.getCurPlayer(); } else { connected = 0; }
-
-        // xHat = 0;
-        // yHat = -1;
-        // do { /* Drilling */ } while (this.getPiece(i, j, xHat, --yHat) == this.getCurPlayer());
-        // while (this.getPiece(i, j, xHat, ++yHat) == this.getCurPlayer()) {
-        //     console.log(this.getPiece(i, j, xHat, yHat) + " @(" + xHat + ", " + yHat + ")");
-        //     if (this.getPiece(i, j, xHat, yHat) == this.getCurPlayer()) { connected++; }
-        // }
-        // if (connected >= CONNECT_N) { return this.getCurPlayer(); } else { connected = 0; }
-
-        // xHat = 1;
-        // yHat = 0;
-        // do { /* Drilling */ } while (this.getPiece(i, j, ++xHat, yHat) == this.getCurPlayer());
-        // while (this.getPiece(i, j, --xHat, yHat) == this.getCurPlayer()) {
-        //     console.log(this.getPiece(i, j, xHat, yHat) + " @(" + xHat + ", " + yHat + ")");
-        //     if (this.getPiece(i, j, xHat, yHat) == this.getCurPlayer()) { connected++; }
-        // }
-        // if (connected >= CONNECT_N) { return this.getCurPlayer(); } else { connected = 0; }
+console.log(g1.isConnected(3, 3));
