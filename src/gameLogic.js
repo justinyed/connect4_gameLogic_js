@@ -55,38 +55,36 @@ class Game {
 
         console.log("Current Piece: " + this.getPiece(i, j, 0, 0));
         var connected = 0;
+
+        var x = 0;
+        var y = 1;
+        var a = 0;
+        var b = 1;
+
+        do {
+            /* Drilling */
+            x += a;
+            y += b;
+        } while (this.getPiece(i, j, x, y) == this.getCurPlayer());
+
         if (connected >= CONNECT_N) { return this.getCurPlayer(); } else { connected = 0; }
 
-        // xHat = 0;
-        // yHat = -1;
-        // do { /* Drilling */ } while (this.getPiece(i, j, xHat, --yHat) == this.getCurPlayer());
-        // while (this.getPiece(i, j, xHat, ++yHat) == this.getCurPlayer()) {
-        //     console.log(this.getPiece(i, j, xHat, yHat) + " @(" + xHat + ", " + yHat + ")");
-        //     if (this.getPiece(i, j, xHat, yHat) == this.getCurPlayer()) { connected++; }
-        // }
-        // if (connected >= CONNECT_N) { return this.getCurPlayer(); } else { connected = 0; }
+        x -= a;
+        y -= b;
+
+        while (this.getPiece(i, j, x, y) == this.getCurPlayer()) {
+            console.log(this.getPiece(i, j, x, y) + " @(" + x + ", " + y + ")");
+            if (this.getPiece(i, j, x, y) == this.getCurPlayer()) { connected++; }
+            x -= a;
+            y -= b;
+        }
+        if (connected >= CONNECT_N) { return this.getCurPlayer(); } else { connected = 0; }
 
 
         return NULL_CODE;
     }
 
-    checkLine(i, j, xHat, yHat) {
-        var connected = 0;
-        while (this.getPiece(i, j, xHat, yHat) == this.getCurPlayer()) {
-            // Drilling
-            xHat++;
-            yHat++;
-            // console.log(this.getPiece(originX, originY, unitX, unitY) + " @(" + unitX + ", " + unitY + ")");
-        }
 
-        while (this.getPiece(i, j, xHat, yHat) == this.getCurPlayer()) {
-            // Drilling
-            connected++;
-            xHat++;
-            yHat++;
-        }
-        if (connected >= CONNECT_N) { return this.getPiece(originX, originY, unitX, unitY); } else { return 0; }
-    }
 
     /**
      * 
@@ -100,9 +98,7 @@ class Game {
     getPiece(origin_i, origin_j, x, y) {
         var actualX = origin_i + x;
         var actualY = origin_j - y;
-
         if (!(0 < actualX < WIDTH && 0 < actualY < HEIGHT)) { return OUT_OF_BOUNDS_CODE; } // Check Bounds
-
         return this.board[actualX + actualY * WIDTH];
     }
 
@@ -114,9 +110,11 @@ class Game {
      * @returns OUT_OF_BOUNDS_CODE if x, y is out of bounds
      * 
      */
-    setPiece(i, j, piece) {
-        if (!(0 < i < WIDTH && 0 < j < HEIGHT)) { return OUT_OF_BOUNDS_CODE; } // Check Bounds
-        this.board[i + j * WIDTH] = piece;
+    setPiece(origin_i, origin_j, x, y, piece) {
+        var actualX = origin_i + x;
+        var actualY = origin_j - y;
+        if (!(0 < actualX < WIDTH && 0 < actualY < HEIGHT)) { return OUT_OF_BOUNDS_CODE; } // Check Bounds
+        this.board[actualX + actualY * WIDTH] = piece;
     }
 
 
@@ -225,19 +223,20 @@ class Game {
 // Main
 let g1 = new Game();
 g1.debugFillWith(-1);
-
-g1.setPiece(0, 0, 1);
-g1.setPiece(1, 1, 1);
-g1.setPiece(2, 2, 1);
-g1.setPiece(3, 3, 1);
-g1.setPiece(4, 4, 1);
-g1.setPiece(5, 5, 1);
+var i = 3;
+var j = 3;
+g1.setPiece(i, j, 0, 3, 1);
+g1.setPiece(i, j, 0, 2, 1);
+g1.setPiece(i, j, 0, 1, 1);
+g1.setPiece(i, j, 0, 0, 1);
+g1.setPiece(i, j, 0, -1, 1);
+g1.setPiece(i, j, 0, -2, 1);
 
 g1.turn++;
 
 
 g1.printBoard();
-g1.isConnected(4, 4);
+g1.isConnected(3, 3);
 
 
 
