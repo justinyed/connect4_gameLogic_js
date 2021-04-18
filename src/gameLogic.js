@@ -1,4 +1,4 @@
-
+// TODO - FIX Doc Strings
 // Settings
 const HEIGHT = 6;
 const WIDTH = 7;
@@ -52,8 +52,6 @@ class Game {
      * @returns NULL_CODE if no player wins; PLAYER_1_CODE if player 1 wins; PLAYER_2_CODE if player 2 wins; 
      */
     isConnected(i, j) {
-
-        console.log("Current Piece: " + this.getPiece(i, j, 0, 0));
         if (this.isLineConnected(i, j, 1, 0) != 0) { return this.getCurPlayer(); }
         if (this.isLineConnected(i, j, 0, 1) != 0) { return this.getCurPlayer(); }
         if (this.isLineConnected(i, j, 1, 1) != 0) { return this.getCurPlayer(); }
@@ -61,6 +59,14 @@ class Game {
         return NULL_CODE;
     }
 
+    /**
+     * 
+     * @param {int} i - array-based coordinate
+     * @param {int} j - array-based coordinate
+     * @param {int} x x hat
+     * @param {int} y y hat
+     * @returns
+     */
     isLineConnected(i, j, x, y) {
         var connected = 0;
         var a = x;
@@ -147,13 +153,15 @@ class Game {
      */
     debugFill() { for (var k = 0; k < this.board.length; k++) { this.board[k] = k; } this.turn = 42; }
 
+    /**
+     * 
+     * @param {int} CODE 
+     */
     debugFillWith(CODE) {
         this.clearBoard();
         this.board.fill(CODE);
     }
-    /**
-     * 
-     */
+
     debugRandomGame() {
         for (var k = 0; k < this.board.length * 2; k++) {
             this.dropPiece(Math.floor((Math.random() * 7) + 0));
@@ -192,8 +200,6 @@ class Game {
         return boardString;
     }
 
-
-
     serialize() {
         var serializedState = JSON.stringify(this.board);
         const DELIMITER = "\t";
@@ -211,21 +217,3 @@ class Game {
         this.gameID = states[3];
     }
 }
-
-// Main
-let g1 = new Game();
-g1.debugFillWith(-1);
-var i = 3;
-var j = 3;
-g1.setPiece(i, j, -3, 3, 1);
-g1.setPiece(i, j, -2, 2, 1);
-g1.setPiece(i, j, -1, 1, 1);
-g1.setPiece(i, j, 0, 0, 1);
-g1.setPiece(i, j, 1, -1, 1);
-g1.setPiece(i, j, 2, -2, 1);
-
-g1.turn++;
-
-
-g1.printBoard();
-console.log(g1.isConnected(3, 3));
