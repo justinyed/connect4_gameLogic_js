@@ -8,6 +8,7 @@
   - [Public Methods](#public-methods)
   - [State Codes](#state-codes)
   - [Default Settings](#default-settings)
+  - [TODO](#todo)
 
 ## Description:
 
@@ -50,3 +51,8 @@ The only public methods needed:
 - Default Board Size is '7 X 6'.
 - Meaning the maximum amount of turns is '42'.
 - Connect '4' is the standard connection requirement.
+
+## TODO
+
+- Fix Doc Strings.
+- Perform more rigorous testing.
