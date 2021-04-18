@@ -8,7 +8,7 @@ const CONNECT_N = 4;
 const PLAYER_1_CODE = -1;
 const PLAYER_2_CODE = 1;
 const NULL_CODE = 0;
-const DRAW_CODE = 100;
+const DRAW_CODE = 42;
 const FULL_COLUMN_CODE = 7;
 const OUT_OF_BOUNDS_CODE = 8;
 
