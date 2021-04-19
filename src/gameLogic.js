@@ -1,16 +1,22 @@
 // TODO - FIX Doc Strings
 // Settings
-const HEIGHT = 6;
-const WIDTH = 7;
-const CONNECT_N = 4;
+// const CONFIG.HEIGHT = 6;
+// const CONFIG.WIDTH = 7;
 
-// Codes
-const PLAYER_1_CODE = -1;
-const PLAYER_2_CODE = 1;
-const NULL_CODE = 0;
-const DRAW_CODE = 42;
-const FULL_COLUMN_CODE = 7;
-const OUT_OF_BOUNDS_CODE = 8;
+const CONFIG = {
+    CONNECT_N: 4,
+    HEIGHT: 14,
+    WIDTH: 14
+};
+
+const CODE = {
+    PLAYER_1: -1,
+    PLAYER_2: 1,
+    NULL: 0,
+    DRAW: 42,
+    FULL_COLUMN: 7,
+    OUT_OF_BOUNDS: 8,
+};
 
 /**
  * 
@@ -23,15 +29,15 @@ class Game {
     }
 
     /**
-     * Sets turns to 0 and state to NULL_CODE.
-     * Create new board filled with NULL_CODE.
+     * Sets turns to 0 and state to CODE.NULL.
+     * Create new board filled with CODE.NULL.
      */
     clearBoard() {
         this.turn = 0;
-        this.state = NULL_CODE;
+        this.state = CODE.NULL;
         this.board = new Array();
-        this.board.length = HEIGHT * WIDTH;
-        this.board.fill(NULL_CODE);
+        this.board.length = CONFIG.HEIGHT * CONFIG.WIDTH;
+        this.board.fill(CODE.NULL);
     }
 
     /**
@@ -43,20 +49,45 @@ class Game {
      * Checks for draw game based on maximum number of moves.
      * @returns true if game is a draw, false otherwise.
      */
-    isDraw() { if (this.turn == HEIGHT * WIDTH) { this.state = DRAW_CODE; return this.state; } }
+    isDraw() {
+        if (this.turn == CONFIG.HEIGHT * CONFIG.WIDTH) {
+            this.state = CODE.DRAW;
+        } else {
+            this.state = CODE.NULL;
+        }
+        return this.state;
+    }
 
     /**
      * Checks if a game has been won at the given position.
      * @param {int} i - array-based coordinate
      * @param {int} j - array-based coordinate
-     * @returns NULL_CODE if no player wins; PLAYER_1_CODE if player 1 wins; PLAYER_2_CODE if player 2 wins; 
+     * @returns CODE.NULL if no player wins; PLAYER_1_CODE if player 1 wins; PLAYER_2_CODE if player 2 wins; 
      */
     isConnected(i, j) {
-        if (this.isLineConnected(i, j, 1, 0) != 0) { return this.getCurPlayer(); }
-        if (this.isLineConnected(i, j, 0, 1) != 0) { return this.getCurPlayer(); }
-        if (this.isLineConnected(i, j, 1, 1) != 0) { return this.getCurPlayer(); }
-        if (this.isLineConnected(i, j, -1, 1) != 0) { return this.getCurPlayer(); }
-        return NULL_CODE;
+        // console.log("Checking: (" + i + ", " + j + ")")
+
+        var s1 = this.isLineConnected(i, j, 1, 0);
+        if (s1 != 0) {
+            return this.getCurPlayer();
+        }
+
+        var s2 = this.isLineConnected(i, j, 0, 1);
+        if (s2 != 0) {
+            return this.getCurPlayer();
+        }
+
+        var s3 = this.isLineConnected(i, j, 1, 1);
+        if (s3 != 0) {
+            return this.getCurPlayer();
+        }
+
+        var s4 = this.isLineConnected(i, j, -1, 1);
+        if (s4 != 0) {
+            return this.getCurPlayer();
+        }
+
+        return CODE.NULL;
     }
 
     /**
@@ -68,19 +99,43 @@ class Game {
      * @returns
      */
     isLineConnected(i, j, x, y) {
+
         var connected = 0;
         var a = x;
         var b = y;
-        do { /* Drilling */ x += a; y += b; }
+
+        do {
+            /* Drilling */
+            x += a;
+            y += b;
+        }
+
         while (this.getPiece(i, j, x, y) == this.getCurPlayer());
+
         x -= a;
         y -= b;
+
         while (this.getPiece(i, j, x, y) == this.getCurPlayer()) {
-            if (this.getPiece(i, j, x, y) == this.getCurPlayer()) { connected++; }
+
+            if (this.getPiece(i, j, x, y) == this.getCurPlayer()) {
+                connected++;
+            }
+
             x -= a;
             y -= b;
         }
-        if (connected >= CONNECT_N) { return this.getCurPlayer(); } else { return NULL_CODE; }
+
+        // Check for winner
+        if (connected >= CONFIG.CONNECT_N) {
+
+            this.state = this.getCurPlayer();
+            // console.log("FOUND WINNER:\t" + this.state);
+            return this.state;
+
+        } else {
+            return CODE.NULL;
+        }
+
     }
 
 
@@ -96,8 +151,8 @@ class Game {
     getPiece(origin_i, origin_j, x, y) {
         var actualX = origin_i + x;
         var actualY = origin_j - y;
-        if (!(0 < actualX < WIDTH && 0 < actualY < HEIGHT)) { return OUT_OF_BOUNDS_CODE; } // Check Bounds
-        return this.board[actualX + actualY * WIDTH];
+        if (!(0 < actualX < CONFIG.WIDTH && 0 < actualY < CONFIG.HEIGHT)) { return CODE.OUT_OF_BOUNDS; } // Check Bounds
+        return this.board[actualX + actualY * CONFIG.WIDTH];
     }
 
     /**
@@ -111,33 +166,33 @@ class Game {
     setPiece(origin_i, origin_j, x, y, piece) {
         var actualX = origin_i + x;
         var actualY = origin_j - y;
-        if (!(0 < actualX < WIDTH && 0 < actualY < HEIGHT)) { return OUT_OF_BOUNDS_CODE; } // Check Bounds
-        this.board[actualX + actualY * WIDTH] = piece;
+        if (!(0 < actualX < CONFIG.WIDTH && 0 < actualY < CONFIG.HEIGHT)) { return CODE.OUT_OF_BOUNDS; } // Check Bounds
+        this.board[actualX + actualY * CONFIG.WIDTH] = piece;
     }
 
 
 
     /**
      * If returns false check message and check if finished winner is not '0'.
-     * Checks if input is OUT_OF_BOUNDS or INVALID.
+     * Checks if input is CODE.OUT_OF_BOUNDS or INVALID.
      * Checks if draw or connect4 winning move.
      * @param {int} column 
      * @returns CODE
      */
     dropPiece(column) {
         // Check Initial
-        if (0 >= column >= 7) { return OUT_OF_BOUNDS_CODE; }
-        if (this.board[column + 0 * WIDTH] != NULL_CODE) { return FULL_COLUMN_CODE; }
+        if (0 >= column >= 7) { return CODE.OUT_OF_BOUNDS; }
+        if (this.board[column + 0 * CONFIG.WIDTH] != CODE.NULL) { return CODE.FULL_COLUMN; }
 
         // Drill to lowest unfilled position and place piece
         var y = 0;
-        for (; y < HEIGHT && this.board[column + (y + 1) * WIDTH] == NULL_CODE; y++) { /* Drilling...*/ }
-        this.board[column + y * WIDTH] = this.getCurPlayer();
+        for (; y < CONFIG.HEIGHT && this.board[column + (y + 1) * CONFIG.WIDTH] == CODE.NULL; y++) { /* Drilling...*/ }
+        this.board[column + y * CONFIG.WIDTH] = this.getCurPlayer();
 
         this.turn++;
-        if (this.isDraw() == DRAW_CODE) { return DRAW_CODE; }
+        if (this.isDraw() == CODE.DRAW) { return CODE.DRAW; }
 
-        // Check if someone won; return NULL_CODE if no winner found.
+        // Check if someone won; return CODE.NULL if no winner found.
         this.state = this.isConnected(column, y);
         return this.state;
     }
@@ -146,7 +201,7 @@ class Game {
      * Get current player based on turns (even -> -1; odd -> 1)
      * @returns current player
      */
-    getCurPlayer() { if (this.turn % 2 == 0) { return PLAYER_1_CODE; } else { return PLAYER_2_CODE; } }
+    getCurPlayer() { if (this.turn % 2 == 0) { return CODE.PLAYER_1; } else { return CODE.PLAYER_2; } }
 
     /**
      * 
@@ -157,15 +212,9 @@ class Game {
      * 
      * @param {int} CODE 
      */
-    debugFillWith(CODE) {
+    debugFillW(piece) {
         this.clearBoard();
-        this.board.fill(CODE);
-    }
-
-    debugRandomGame() {
-        for (var k = 0; k < this.board.length * 2; k++) {
-            this.dropPiece(Math.floor((Math.random() * 7) + 0));
-        }
+        this.board.fill(piece);
     }
 
     /**
@@ -188,11 +237,18 @@ class Game {
     toString() {
         var boardString = "";
         var pieceString = "";
-        for (var j = 0; j < this.board.length; j++) {
-            if (j % WIDTH == 0) { boardString += "\n"; }
+        var curPiece;
+        for (var index = 0; index < this.board.length; index++) {
+            curPiece = this.board[index];
+            if (index % CONFIG.WIDTH == 0) { boardString += "\n"; }
             boardString += "[";
 
-            pieceString = this.board[j].toString();
+            if (curPiece == CODE.NULL) {
+                pieceString = " ";
+            } else {
+                pieceString = this.board[index].toString();
+            }
+
             if (pieceString.length < 2) { boardString += " "; }
 
             boardString += pieceString + " ]";
@@ -217,3 +273,5 @@ class Game {
         this.gameID = states[3];
     }
 }
+
+module.exports = { Game, CODE, CONFIG };
