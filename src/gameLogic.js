@@ -3,10 +3,10 @@
 // const CONFIG.HEIGHT = 6;
 // const CONFIG.WIDTH = 7;
 
-const CONFIG = {
+var CONFIG = {
     CONNECT_N: 4,
-    HEIGHT: 14,
-    WIDTH: 14
+    HEIGHT: 6,
+    WIDTH: 7
 };
 
 const CODE = {
@@ -15,7 +15,7 @@ const CODE = {
     NULL: 0,
     DRAW: 42,
     FULL_COLUMN: 7,
-    OUT_OF_BOUNDS: 8,
+    OUT_OF_BOUNDS: 8
 };
 
 /**
@@ -104,41 +104,22 @@ class Game {
         var a = x;
         var b = y;
 
-
-        while (this.getPiece(i, j, x, y) == this.getCurPlayer()) {
-            x += a;
-            y += b;
-        }
-
-        // do {
-        //     /* Drilling */
-        //     x += a;
-        //     y += b;
-        // }
-
-        // while (this.getPiece(i, j, x, y) == this.getCurPlayer());
-
+        while (this.getPiece(i, j, x, y) == this.getCurPlayer()) { x += a; y += b; }
         x -= a;
         y -= b;
-
         while (this.getPiece(i, j, x, y) == this.getCurPlayer()) {
-
-            if (this.getPiece(i, j, x, y) == this.getCurPlayer()) {
-                connected++;
-            }
-
+            if (this.getPiece(i, j, x, y) == this.getCurPlayer()) { connected++; }
             x -= a;
             y -= b;
         }
 
         // Check for winner
         if (connected >= CONFIG.CONNECT_N) {
-
             this.state = this.getCurPlayer();
-            // console.log("FOUND WINNER:\t" + this.state);
+            console.log("FOUND WINNER:\t" + this.state);
             return this.state;
-
         } else {
+            console.log("Connected:\t" + connected);
             return CODE.NULL;
         }
 
@@ -199,7 +180,7 @@ class Game {
         if (this.isDraw() == CODE.DRAW) { return CODE.DRAW; }
 
         // Check if someone won; return CODE.NULL if no winner found.
-        this.state = this.isConnected(column, y);
+        this.state = this.isConnected(column, y + 1);
         return this.state;
     }
 
@@ -279,5 +260,7 @@ class Game {
         this.gameID = states[3];
     }
 }
+
+
 
 module.exports = { Game, CODE, CONFIG };
