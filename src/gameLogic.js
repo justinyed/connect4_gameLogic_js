@@ -104,13 +104,19 @@ class Game {
         var a = x;
         var b = y;
 
-        do {
-            /* Drilling */
+
+        while (this.getPiece(i, j, x, y) == this.getCurPlayer()) {
             x += a;
             y += b;
         }
 
-        while (this.getPiece(i, j, x, y) == this.getCurPlayer());
+        // do {
+        //     /* Drilling */
+        //     x += a;
+        //     y += b;
+        // }
+
+        // while (this.getPiece(i, j, x, y) == this.getCurPlayer());
 
         x -= a;
         y -= b;
