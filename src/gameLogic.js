@@ -2,6 +2,7 @@
 // Settings
 // const CONFIG.HEIGHT = 6;
 // const CONFIG.WIDTH = 7;
+const DELIMITER = "|";
 
 var CONFIG = {
     CONNECT_N: 4,
@@ -84,6 +85,7 @@ class Game {
 
         var s4 = this.isLineConnected(i, j, -1, 1);
         if (s4 != 0) {
+            
             return this.getCurPlayer();
         }
 
@@ -115,11 +117,10 @@ class Game {
 
         // Check for winner
         if (connected >= CONFIG.CONNECT_N) {
+            console.log("winner at " + "i:" + i + " j:" + j + " x: " + x + " y: " + y);
             this.state = this.getCurPlayer();
-            console.log("FOUND WINNER:\t" + this.state);
             return this.state;
         } else {
-            console.log("Connected:\t" + connected);
             return CODE.NULL;
         }
 
@@ -245,7 +246,6 @@ class Game {
 
     serialize() {
         var serializedState = JSON.stringify(this.board);
-        const DELIMITER = "\t";
         serializedState += DELIMITER + this.turn;
         serializedState += DELIMITER + this.state;
         serializedState += DELIMITER + this.gameID;
@@ -253,14 +253,12 @@ class Game {
     }
 
     restore(serializedState) {
-        var states = serializedState.split('\t');
+        var states = serializedState.split(DELIMITER);
         this.board = JSON.parse(states[0]);
         this.turn = states[1];
         this.state = states[2];
         this.gameID = states[3];
     }
 }
-
-
 
 module.exports = { Game, CODE, CONFIG };
