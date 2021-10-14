@@ -1,4 +1,4 @@
-# connect4_gameLogic_js
+# connect4_gameLogic_js (WIP)
 
 ## Table of Contents
 
